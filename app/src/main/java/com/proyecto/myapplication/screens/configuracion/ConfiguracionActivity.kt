@@ -1,2 +1,2 @@
 package com.proyecto.myapplication.screens.configuracion
-
+class ConfiguracionActivity
