@@ -94,9 +94,6 @@ class EstacionesViewModel(private val repository: EstacionRepository) : ViewMode
         }
     }
 
-    /**
-     * Elimina una estación
-     */
     fun eliminarEstacion(estacion: Estacion) {
         viewModelScope.launch {
             repository.eliminar(estacion)

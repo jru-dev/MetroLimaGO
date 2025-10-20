@@ -1,4 +1,4 @@
-package com.proyecto.myapplication.data.repository
+package com.proyecto.myapplication.repository
 
 import com.proyecto.myapplication.data.dao.EstacionDAO
 import com.proyecto.myapplication.data.model.Estacion
