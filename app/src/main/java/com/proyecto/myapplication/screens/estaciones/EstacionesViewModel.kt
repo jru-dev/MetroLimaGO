@@ -15,11 +15,11 @@ import kotlinx.coroutines.launch
  */
 class EstacionesViewModel(private val repository: EstacionRepository) : ViewModel() {
 
-    // Lista de todas las estaciones
+    // Lista de estaciones
     private val _estaciones = MutableStateFlow<List<Estacion>>(emptyList())
     val estaciones: StateFlow<List<Estacion>> = _estaciones.asStateFlow()
 
-    // Estación seleccionada para ver detalles
+    // Estación seleccionada
     private val _estacionSeleccionada = MutableStateFlow<Estacion?>(null)
     val estacionSeleccionada: StateFlow<Estacion?> = _estacionSeleccionada.asStateFlow()
 
@@ -31,8 +31,13 @@ class EstacionesViewModel(private val repository: EstacionRepository) : ViewMode
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
+    // Contador de estaciones
+    private val _totalEstaciones = MutableStateFlow(0)
+    val totalEstaciones: StateFlow<Int> = _totalEstaciones.asStateFlow()
+
     init {
         cargarEstaciones()
+        contarEstaciones()
     }
 
     /**
@@ -54,13 +59,16 @@ class EstacionesViewModel(private val repository: EstacionRepository) : ViewMode
     fun buscarEstaciones(query: String) {
         _searchQuery.value = query
         viewModelScope.launch {
+            _isLoading.value = true
             if (query.isEmpty()) {
                 repository.todasLasEstaciones.collect { listaEstaciones ->
                     _estaciones.value = listaEstaciones
+                    _isLoading.value = false
                 }
             } else {
                 repository.buscarPorNombre(query).collect { listaEstaciones ->
                     _estaciones.value = listaEstaciones
+                    _isLoading.value = false
                 }
             }
         }
@@ -71,8 +79,20 @@ class EstacionesViewModel(private val repository: EstacionRepository) : ViewMode
      */
     fun obtenerEstacionPorId(id: Int) {
         viewModelScope.launch {
+            _isLoading.value = true
             val estacion = repository.obtenerPorId(id)
             _estacionSeleccionada.value = estacion
+            _isLoading.value = false
+        }
+    }
+
+    /**
+     * Cuenta el total de estaciones en la BD
+     */
+    private fun contarEstaciones() {
+        viewModelScope.launch {
+            val total = repository.contarEstaciones()
+            _totalEstaciones.value = total
         }
     }
 
@@ -82,6 +102,7 @@ class EstacionesViewModel(private val repository: EstacionRepository) : ViewMode
     fun insertarEstacion(estacion: Estacion) {
         viewModelScope.launch {
             repository.insertar(estacion)
+            contarEstaciones()
         }
     }
 
@@ -94,9 +115,13 @@ class EstacionesViewModel(private val repository: EstacionRepository) : ViewMode
         }
     }
 
+    /**
+     * Elimina una estación
+     */
     fun eliminarEstacion(estacion: Estacion) {
         viewModelScope.launch {
             repository.eliminar(estacion)
+            contarEstaciones()
         }
     }
 }
