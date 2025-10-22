@@ -81,7 +81,6 @@ fun HomeScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            // Fila de información
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 modifier = Modifier.fillMaxWidth()
