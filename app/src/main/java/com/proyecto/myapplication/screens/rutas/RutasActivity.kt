@@ -88,3 +88,5 @@ class RutasViewModel(private val repository: RutaRepository) : ViewModel() {
         }
     }
 }
+//Quiero que me ayudea a crear las pantallas principales e implementar regstro de usuarios e quiero que me ayude en implementar
+//el inicio de seciony autenticacion
