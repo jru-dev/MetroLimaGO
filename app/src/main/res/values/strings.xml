@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">MetroLimaGO</string>
+    <string name="app_name">MetroLima GO</string>
+
+    <string name="icono_metro">Ícono de metro</string>
+    <string name="ver_detalles">Ver detalles</string>
+    <string name="buscar_estacion">Buscar estación...</string>
+    <string name="estaciones_titulo">Estaciones</string>
+    <string name="total_estaciones">%d estaciones</string>
+    <string name="no_estaciones">No se encontraron estaciones</string>
+
 </resources>
