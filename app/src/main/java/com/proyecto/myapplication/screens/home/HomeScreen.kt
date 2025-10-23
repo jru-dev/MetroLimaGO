@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -14,68 +15,65 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+
 @Composable
 fun HomeScreen(
+    viewModel: HomeViewModel,
     onNavigateEstaciones: () -> Unit,
     onNavigateRutas: () -> Unit,
     onNavigateConfiguracion: () -> Unit
 ) {
-    Surface(
-        color = Color(0xFFFFF3E0), // fondo crema
-        modifier = Modifier.fillMaxSize()
-    ) {
+    val estado = viewModel.estadoServicio.collectAsState().value
+    val backgroundColor = when (estado) {
+        HomeViewModel.EstadoServicio.NORMAL -> Color(0xFFE8F5E9)
+        HomeViewModel.EstadoServicio.DEMORAS -> Color(0xFFFFF8E1)
+        HomeViewModel.EstadoServicio.FUERA_DE_SERVICIO -> Color(0xFFFFEBEE)
+    }
+
+    val cardColor = when (estado) {
+        HomeViewModel.EstadoServicio.NORMAL -> Color(0xFF4CAF50)
+        HomeViewModel.EstadoServicio.DEMORAS -> Color(0xFFFFC107)
+        HomeViewModel.EstadoServicio.FUERA_DE_SERVICIO -> Color(0xFFF44336)
+    }
+
+    Scaffold(
+        containerColor = Color(0xFFFFF6E8)
+    ) { padding ->
         Column(
             modifier = Modifier
+                .padding(padding)
                 .fillMaxSize()
-                .padding(20.dp),
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Título
+            Text("🚇 MetroLima GO", fontWeight = FontWeight.Bold, fontSize = 22.sp, color = Color(0xFFFFA000))
+            Text("Tu compañero de viaje en el Metro", fontSize = 14.sp, color = Color.Gray)
+            Spacer(Modifier.height(16.dp))
 
-            // Logo y título
-            Icon(
-                imageVector = Icons.Default.Train,
-                contentDescription = null,
-                tint = Color(0xFFFF9800),
-                modifier = Modifier.size(64.dp)
-            )
-
-            Text(
-                text = "MetroLima GO",
-                fontSize = 22.sp,
-                color = Color(0xFFFF9800),
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "Tu compañero de viaje en el Metro",
-                color = Color.Gray,
-                fontSize = 14.sp
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-
+            // Estado de servicio
             Card(
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFEF5350)),
+                colors = CardDefaults.cardColors(containerColor = cardColor),
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "🚨 Servicio Interrumpido",
+                        text = when (estado) {
+                            HomeViewModel.EstadoServicio.FUERA_DE_SERVICIO -> "🚨 Servicio Interrumpido"
+                            HomeViewModel.EstadoServicio.DEMORAS -> "⚠️ Servicio con demoras"
+                            else -> "✅ Servicio Normal"
+                        },
                         color = Color.White,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
                     )
                     Spacer(Modifier.height(8.dp))
-                    Text(
-                        text = "Línea 1 temporalmente fuera de servicio por mantenimiento de emergencia",
-                        color = Color.White
-                    )
+                    Text(viewModel.getMensajeEstado(), color = Color.White)
                     Spacer(Modifier.height(8.dp))
-                    Text(
-                        text = "Tiempo estimado de reparación: 45 minutos",
-                        color = Color.White.copy(alpha = 0.9f),
-                        fontSize = 13.sp
-                    )
+                    Divider(color = Color.White.copy(alpha = 0.6f))
+                    Spacer(Modifier.height(8.dp))
+                    Text(viewModel.getTiempoReparacion(), color = Color.White, fontSize = 14.sp)
                 }
             }
 
@@ -85,101 +83,65 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                InfoCard(icon = Icons.Default.Subway, title = "Estaciones", value = "26")
-                InfoCard(icon = Icons.Default.AccessTime, title = "Horario", value = "6AM - 10PM")
-                InfoCard(icon = Icons.Default.AttachMoney, title = "Tarifa", value = "S/ 1.50")
+                InfoCard("🏙️", "Estaciones", "26")
+                InfoCard("⏰", "Horario", "6AM - 10PM")
+                InfoCard("🎫", "Tarifa", "S/ 1.50")
             }
 
-            Spacer(Modifier.height(28.dp))
+            Spacer(Modifier.height(24.dp))
+            Text("Menú Principal", fontWeight = FontWeight.Bold, color = Color.DarkGray)
 
+            Spacer(Modifier.height(12.dp))
+
+            MenuButton("Planificar Ruta", "Calcula tu viaje", Color(0xFFFF9800)) { onNavigateRutas() }
+            MenuButton("Ver Estaciones", "Lista completa", Color.White) { onNavigateEstaciones() }
+            MenuButton("Configuración", "Ajustes de la app", Color.White) { onNavigateConfiguracion() }
+
+            Spacer(Modifier.height(24.dp))
             Text(
-                text = "Menú Principal",
-                fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF6D4C41),
-                modifier = Modifier.align(Alignment.Start)
-            )
-
-            Spacer(Modifier.height(16.dp))
-
-            MenuButton(
-                text = "Planificar Ruta",
-                subtext = "Calcula tu viaje",
-                color = Color(0xFFFF9800),
-                icon = Icons.Default.Place,
-                onClick = onNavigateRutas
-            )
-
-            MenuButton(
-                text = "Ver Estaciones",
-                subtext = "Lista completa",
-                color = Color.White,
-                icon = Icons.Default.List,
-                onClick = onNavigateEstaciones
-            )
-
-            MenuButton(
-                text = "Configuración",
-                subtext = "Ajustes de la app",
-                color = Color.White,
-                icon = Icons.Default.Settings,
-                onClick = onNavigateConfiguracion
-            )
-
-            Spacer(Modifier.height(20.dp))
-
-            Text(
-                text = "Metro de Lima - Línea 1",
+                "Metro de Lima - Línea 1\nAutoridad Autónoma del Sistema Eléctrico de Transporte Masivo de Lima y Callao",
+                fontSize = 12.sp,
                 color = Color.Gray,
-                fontSize = 13.sp
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center
             )
         }
     }
 }
 
 @Composable
-fun InfoCard(icon: androidx.compose.ui.graphics.vector.ImageVector, title: String, value: String) {
+fun InfoCard(icon: String, title: String, subtitle: String) {
     Card(
-        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(4.dp),
         modifier = Modifier
-            .width(100.dp)
             .padding(4.dp)
+            .width(100.dp)
     ) {
         Column(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(icon, contentDescription = null, tint = Color(0xFFFF9800))
-            Spacer(Modifier.height(4.dp))
-            Text(title, color = Color.Gray, fontSize = 13.sp)
-            Text(value, fontWeight = FontWeight.Bold, color = Color(0xFF212121))
+            Text(icon, fontSize = 22.sp)
+            Text(title, fontWeight = FontWeight.Bold)
+            Text(subtitle, color = Color.Gray, fontSize = 12.sp)
         }
     }
 }
 
 @Composable
-fun MenuButton(
-    text: String,
-    subtext: String,
-    color: Color,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    onClick: () -> Unit
-) {
+fun MenuButton(title: String, subtitle: String, color: Color, onClick: () -> Unit) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(containerColor = color),
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 6.dp)
+            .padding(vertical = 4.dp)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(icon, contentDescription = null)
-            Spacer(Modifier.width(8.dp))
-            Column {
-                Text(text, fontWeight = FontWeight.Bold, color = Color(0xFF212121))
-                Text(subtext, color = Color.DarkGray, fontSize = 12.sp)
-            }
+        Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
+            Text(title, color = if (color == Color.White) Color.Black else Color.White, fontWeight = FontWeight.Bold)
+            Text(subtitle, color = if (color == Color.White) Color.Gray else Color.White.copy(alpha = 0.8f), fontSize = 12.sp)
         }
     }
 }
