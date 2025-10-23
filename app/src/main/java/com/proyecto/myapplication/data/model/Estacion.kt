@@ -18,7 +18,7 @@ data class Estacion(
     val tieneRampa: Boolean = false,
     val tieneBaño: Boolean = false,
     val favorita: Boolean = false,
-    val orden: Int = 0
+    val orden: Int = 0,
     val distanciaKm: Double = 0.0,
     val tiempoDesdeOrigen: Int = 0,
     val zona: String = ""
