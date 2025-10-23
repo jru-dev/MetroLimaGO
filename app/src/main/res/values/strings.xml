@@ -1,3 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MetroLimaGO</string>
+    <string name="app_name">MetroLima GO</string>
+    
+    <!-- Pantalla Principal -->
+    <string name="home_title">MetroLima GO</string>
+    <string name="home_welcome">¡Bienvenido a MetroLima GO!</string>
+    <string name="home_subtitle">Planifica tu viaje en el Metro de Lima</string>
+    <string name="home_estaciones">Estaciones</string>
+    <string name="home_estaciones_desc">Consulta información de todas las estaciones</string>
+    <string name="home_planificar">Planificar Ruta</string>
+    <string name="home_planificar_desc">Encuentra la mejor ruta para tu destino</string>
+    <string name="home_rutas">Rutas Guardadas</string>
+    <string name="home_rutas_desc">Consulta tus rutas favoritas</string>
+    <string name="home_alertas">Alertas del Metro</string>
+    <string name="home_alertas_desc">Información sobre retrasos y mantenimiento</string>
+    <string name="home_configuracion">Configuración</string>
+    <string name="home_configuracion_desc">Personaliza tu experiencia</string>
+    
+    <!-- Información del Servicio -->
+    <string name="service_info">Información del Servicio</string>
+    <string name="service_hours">Horario: 5:00 AM - 11:00 PM</string>
+    <string name="service_frequency">Frecuencia: 3-5 minutos</string>
+    <string name="service_status">Estado: Operativo</string>
+    
+    <!-- Estaciones -->
+    <string name="estaciones_title">Estaciones</string>
+    <string name="estaciones_search">Buscar estación...</string>
+    <string name="estaciones_filter_all">Todas</string>
+    <string name="estaciones_filter_line1">Línea 1</string>
+    <string name="estaciones_filter_line2">Línea 2</string>
+    <string name="estaciones_filter_line3">Línea 3</string>
+    
+    <!-- Detalle de Estación -->
+    <string name="detalle_horarios">Horarios</string>
+    <string name="detalle_ubicacion">Ubicación</string>
+    <string name="detalle_servicios">Servicios Disponibles</string>
+    <string name="detalle_accesible">Accesible</string>
+    <string name="detalle_estacionamiento">Estacionamiento</string>
+    <string name="detalle_bicicletero">Bicicletero</string>
+    
+    <!-- Rutas -->
+    <string name="rutas_title">Rutas Guardadas</string>
+    <string name="rutas_favorita">Favorita</string>
+    <string name="rutas_tiempo">Tiempo estimado: %d min</string>
+    <string name="rutas_estaciones">Estaciones: %d</string>
+    
+    <!-- Planificador -->
+    <string name="planificador_title">Planificar Ruta</string>
+    <string name="planificador_selecciona">Selecciona tu ruta</string>
+    <string name="planificador_origen">Estación de Origen</string>
+    <string name="planificador_destino">Estación de Destino</string>
+    <string name="planificador_calcular">Calcular Ruta</string>
+    <string name="planificador_calculando">Calculando la mejor ruta...</string>
+    <string name="planificador_rutas_encontradas">Rutas Encontradas</string>
+    <string name="planificador_navegar">Iniciar Navegación</string>
+    
+    <!-- Alertas -->
+    <string name="alertas_title">Alertas del Metro</string>
+    <string name="alertas_sin_alertas">No hay alertas activas</string>
+    <string name="alertas_normal">El servicio del Metro opera normalmente</string>
+    <string name="alertas_afectadas">Estaciones afectadas: %d</string>
+    
+    <!-- Configuración -->
+    <string name="configuracion_title">Configuración</string>
+    <string name="configuracion_preferencias">Preferencias</string>
+    <string name="configuracion_modo_oscuro">Modo Oscuro</string>
+    <string name="configuracion_modo_oscuro_desc">Cambiar entre tema claro y oscuro</string>
+    <string name="configuracion_idioma">Idioma</string>
+    <string name="configuracion_idioma_desc">Español</string>
+    <string name="configuracion_notificaciones">Notificaciones</string>
+    <string name="configuracion_notificaciones_desc">Recibir alertas del Metro</string>
+    <string name="configuracion_informacion">Información</string>
+    <string name="configuracion_version">Versión 1.0.0</string>
+    <string name="configuracion_descripcion">Aplicación oficial para planificar viajes en el Metro de Lima. Desarrollada con Android Jetpack Compose y las mejores prácticas de desarrollo móvil.</string>
+    
+    <!-- Navegación -->
+    <string name="nav_volver">Volver</string>
+    <string name="nav_buscar">Buscar</string>
+    <string name="nav_filtros">Filtros</string>
+    <string name="nav_cambiar">Cambiar</string>
+    <string name="nav_seleccionar">Seleccionar estación</string>
+    
+    <!-- Errores -->
+    <string name="error_cargando">Error al cargar datos</string>
+    <string name="error_estacion_no_encontrada">Estación no encontrada</string>
+    <string name="error_calcular_ruta">Error al calcular la ruta</string>
+    <string name="error_seleccionar_estaciones">Selecciona estación de origen y destino</string>
+    <string name="error_estaciones_iguales">La estación de origen y destino deben ser diferentes</string>
 </resources>
