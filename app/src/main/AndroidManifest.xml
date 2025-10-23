@@ -12,11 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MetroLimaGO">
         <activity
-            android:name=".ui.rutas.RutasActivity"
+            android:name="com.proyecto.myapplication.screens.rutas.RutasActivity"
             android:exported="false"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.MetroLimaGO">
-            <intent-filter>
+            android:label="MetroLimaGO"
+            android:theme="@style/Theme.MetroLimaGO" />
+        <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -1,4 +1,4 @@
-package com.proyecto.myapplication.ui.rutas
+package com.proyecto.myapplication.screens.rutas
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
