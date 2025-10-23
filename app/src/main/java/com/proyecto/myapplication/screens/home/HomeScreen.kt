@@ -51,7 +51,6 @@ fun HomeScreen(
             Text("Tu compañero de viaje en el Metro", fontSize = 14.sp, color = Color.Gray)
             Spacer(Modifier.height(16.dp))
 
-            // Estado de servicio
             Card(
                 colors = CardDefaults.cardColors(containerColor = cardColor),
                 shape = RoundedCornerShape(16.dp),
@@ -60,9 +59,9 @@ fun HomeScreen(
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = when (estado) {
-                            HomeViewModel.EstadoServicio.FUERA_DE_SERVICIO -> "🚨 Servicio Interrumpido"
-                            HomeViewModel.EstadoServicio.DEMORAS -> "⚠️ Servicio con demoras"
-                            else -> "✅ Servicio Normal"
+                            HomeViewModel.EstadoServicio.FUERA_DE_SERVICIO -> " Servicio Interrumpido"
+                            HomeViewModel.EstadoServicio.DEMORAS -> " Servicio con demoras"
+                            else -> " Servicio Normal"
                         },
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
