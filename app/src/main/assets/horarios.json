@@ -1,0 +1,46 @@
+{
+  "horarios": [
+    {
+      "linea": "Línea 1",
+      "estacion": "Villa El Salvador",
+      "direccion": "Norte",
+      "horarios_salida": ["05:00", "05:15", "05:30", "05:45", "06:00"],
+      "frecuencia": 15,
+      "estado": "Normal"
+    },
+    {
+      "linea": "Línea 1",
+      "estacion": "San Juan de Miraflores",
+      "direccion": "Norte",
+      "horarios_salida": ["05:05", "05:20", "05:35", "05:50", "06:05"],
+      "frecuencia": 15,
+      "estado": "Normal"
+    },
+    {
+      "linea": "Línea 1",
+      "estacion": "Atocongo",
+      "direccion": "Norte",
+      "horarios_salida": ["05:10", "05:25", "05:40", "05:55", "06:10"],
+      "frecuencia": 15,
+      "estado": "Normal"
+    },
+    {
+      "linea": "Línea 2",
+      "estacion": "Ate",
+      "direccion": "Oeste",
+      "horarios_salida": ["05:00", "05:20", "05:40", "06:00", "06:20"],
+      "frecuencia": 20,
+      "estado": "Normal"
+    },
+    {
+      "linea": "Línea 2",
+      "estacion": "Santa Anita",
+      "direccion": "Oeste",
+      "horarios_salida": ["05:05", "05:25", "05:45", "06:05", "06:25"],
+      "frecuencia": 20,
+      "estado": "Normal"
+    }
+  ],
+  "ultima_actualizacion": "2024-01-15 10:30:00",
+  "version": "1.2.0"
+}

@@ -1,0 +1,57 @@
+{
+  "version_app": "1.2.0",
+  "configuracion_servidor": {
+    "url_base": "https://api.metrolima.com",
+    "timeout": 30,
+    "reintentos": 3
+  },
+  "temas_disponibles": [
+    {
+      "id": "default",
+      "nombre": "Por defecto",
+      "colores": {
+        "primario": "#2196F3",
+        "secundario": "#FF9800"
+      }
+    },
+    {
+      "id": "metro",
+      "nombre": "Metro Lima",
+      "colores": {
+        "primario": "#1E88E5",
+        "secundario": "#FFC107"
+      }
+    },
+    {
+      "id": "minimal",
+      "nombre": "Minimalista",
+      "colores": {
+        "primario": "#424242",
+        "secundario": "#757575"
+      }
+    }
+  ],
+  "idiomas_disponibles": [
+    {
+      "codigo": "es",
+      "nombre": "Español",
+      "activo": true
+    },
+    {
+      "codigo": "en",
+      "nombre": "English",
+      "activo": true
+    }
+  ],
+  "notificaciones": {
+    "horarios": true,
+    "retrasos": true,
+    "mantenimiento": true,
+    "promociones": false
+  },
+  "sincronizacion": {
+    "intervalo_minutos": 30,
+    "solo_wifi": false,
+    "auto_sincronizar": true
+  }
+}

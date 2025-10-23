@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">MetroLimaGO</string>
+    
+    <!-- Datos Externos -->
+    <string name="datos_externos">Datos Externos</string>
+    <string name="sincronizar_datos">Sincronizar Datos</string>
+    <string name="sincronizar_configuracion">Sincronizar Configuración</string>
+    <string name="limpiar_cache">Limpiar Cache</string>
+    <string name="ultima_sincronizacion">Última sincronización</string>
+    <string name="nunca_sincronizado">Nunca sincronizado</string>
+    <string name="datos_disponibles">Datos disponibles</string>
+    <string name="horarios">horarios</string>
+    <string name="actualizacion">Actualización</string>
+    
+    <!-- Configuración -->
+    <string name="configuracion">Configuración</string>
+    <string name="apariencia">Apariencia</string>
+    <string name="modo_oscuro">Modo Oscuro</string>
+    <string name="activar_tema_oscuro">Activar tema oscuro</string>
+    <string name="tema">Tema</string>
+    <string name="cambiar">Cambiar</string>
+    <string name="idioma_notificaciones">Idioma y Notificaciones</string>
+    <string name="idioma">Idioma</string>
+    <string name="notificaciones">Notificaciones</string>
+    <string name="recibir_notificaciones">Recibir notificaciones del metro</string>
+    <string name="informacion">Información</string>
+    <string name="version">Versión</string>
+    <string name="ver_info">Ver Info</string>
+    <string name="creditos">Créditos</string>
+    <string name="info_desarrollador">Información del desarrollador</string>
+    <string name="ver_creditos">Ver Créditos</string>
+    
+    <!-- Diálogos -->
+    <string name="confirmar_sincronizacion">¿Desea sincronizar los datos externos del metro? Esto puede tomar unos momentos.</string>
+    <string name="confirmar_configuracion">¿Desea sincronizar la configuración desde el servidor?</string>
+    <string name="confirmar_limpiar_cache">¿Desea limpiar el cache de datos? Esto eliminará los datos almacenados localmente.</string>
+    <string name="sincronizar">Sincronizar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="limpiar">Limpiar</string>
+    <string name="cerrar">Cerrar</string>
+    <string name="reintentar">Reintentar</string>
+    
+    <!-- Errores -->
+    <string name="error_conexion">Error de conexión</string>
+    <string name="error_servidor">Error del servidor</string>
+    <string name="error_desconocido">Error desconocido</string>
+    <string name="error_sincronizacion">Error al sincronizar</string>
+    
+    <!-- Mensajes de éxito -->
+    <string name="sincronizacion_exitosa">Sincronización exitosa</string>
+    <string name="cache_limpiado">Cache limpiado</string>
+    <string name="modo_oscuro_activado">Modo oscuro activado</string>
+    <string name="modo_claro_activado">Modo claro activado</string>
+    <string name="idioma_cambiado">Idioma cambiado</string>
+    <string name="tema_cambiado">Tema cambiado</string>
+    <string name="notificaciones_activadas">Notificaciones activadas</string>
+    <string name="notificaciones_desactivadas">Notificaciones desactivadas</string>
+</resources>
