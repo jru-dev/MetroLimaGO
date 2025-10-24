@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.proyecto.myapplication.ui.navigation.MetroNavigation
 import com.proyecto.myapplication.ui.theme.MetroLimaTheme
+import com.proyecto.myapplication.ui.theme.rememberThemeState
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,5 +32,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MetroLimaApp() {
     val navController = rememberNavController()
-    MetroNavigation(navController = navController)
+    val isDarkTheme = rememberThemeState()
+    
+    MetroLimaTheme(darkTheme = isDarkTheme) {
+        MetroNavigation(navController = navController)
+    }
 }
