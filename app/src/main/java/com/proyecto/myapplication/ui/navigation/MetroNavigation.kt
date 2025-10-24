@@ -4,13 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.proyecto.myapplication.ui.screens.HomeScreen
-import com.proyecto.myapplication.ui.screens.ListaEstacionesScreen
-import com.proyecto.myapplication.ui.screens.RutasScreen
-import com.proyecto.myapplication.ui.screens.DetalleEstacionScreen
-import com.proyecto.myapplication.ui.screens.ConfiguracionScreen
-import com.proyecto.myapplication.ui.screens.AlertasScreen
-import com.proyecto.myapplication.ui.screens.PlanificadorRutasScreen
+import com.proyecto.myapplication.ui.screens.HomeScreenSimple
+import com.proyecto.myapplication.ui.screens.EstacionesScreenSimple
+import com.proyecto.myapplication.ui.screens.PlanificadorScreenSimple
 
 @Composable
 fun MetroNavigation(navController: NavHostController) {
@@ -19,32 +15,18 @@ fun MetroNavigation(navController: NavHostController) {
         startDestination = "home"
     ) {
         composable("home") {
-            HomeScreen(
+            HomeScreenSimple(
                 onNavigateToEstaciones = {
                     navController.navigate("estaciones")
                 },
-                onNavigateToRutas = {
-                    navController.navigate("rutas")
-                },
-                onNavigateToConfiguracion = {
-                    navController.navigate("configuracion")
+                onNavigateToPlanificador = {
+                    navController.navigate("planificador")
                 }
             )
         }
         
         composable("estaciones") {
-            ListaEstacionesScreen(
-                onNavigateBack = {
-                    navController.popBackStack()
-                },
-                onNavigateToDetalle = { estacionId ->
-                    navController.navigate("detalle_estacion/$estacionId")
-                }
-            )
-        }
-        
-        composable("rutas") {
-            RutasScreen(
+            EstacionesScreenSimple(
                 onNavigateBack = {
                     navController.popBackStack()
                 }
@@ -52,33 +34,7 @@ fun MetroNavigation(navController: NavHostController) {
         }
         
         composable("planificador") {
-            PlanificadorRutasScreen(
-                onNavigateBack = {
-                    navController.popBackStack()
-                }
-            )
-        }
-        
-        composable("alertas") {
-            AlertasScreen(
-                onNavigateBack = {
-                    navController.popBackStack()
-                }
-            )
-        }
-        
-        composable("configuracion") {
-            ConfiguracionScreen(
-                onNavigateBack = {
-                    navController.popBackStack()
-                }
-            )
-        }
-        
-        composable("detalle_estacion/{estacionId}") { backStackEntry ->
-            val estacionId = backStackEntry.arguments?.getString("estacionId") ?: ""
-            DetalleEstacionScreen(
-                estacionId = estacionId,
+            PlanificadorScreenSimple(
                 onNavigateBack = {
                     navController.popBackStack()
                 }
