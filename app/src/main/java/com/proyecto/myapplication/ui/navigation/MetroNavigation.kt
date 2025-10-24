@@ -22,18 +22,21 @@ fun MetroNavigation(navController: NavHostController) {
 
     Scaffold(
         bottomBar = {
-            MetroBottomNavigation(
-                currentRoute = currentRoute,
-                onNavigate = { route ->
-                    navController.navigate(route) {
-                        popUpTo(navController.graph.startDestinationId) {
-                            saveState = true
+            // Solo mostrar bottom bar en las pantallas principales
+            if (currentRoute in listOf("home", "estaciones", "planificador", "favoritos", "info")) {
+                MetroBottomNavigation(
+                    currentRoute = currentRoute,
+                    onNavigate = { route ->
+                        navController.navigate(route) {
+                            popUpTo(navController.graph.startDestinationId) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
-                        launchSingleTop = true
-                        restoreState = true
                     }
-                }
-            )
+                )
+            }
         }
     ) { paddingValues ->
         NavHost(

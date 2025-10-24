@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,24 +25,25 @@ fun EstacionesScreenSimple(
 ) {
     var query by remember { mutableStateOf("") }
     var lineaSeleccionada by remember { mutableStateOf("Todas") }
-    
+    var estacionSeleccionada by remember { mutableStateOf<Estacion?>(null) }
+
     val estacionesFiltradas = remember(query, lineaSeleccionada) {
         val estaciones = if (lineaSeleccionada == "Todas") {
             EstacionesData.todasLasEstaciones
         } else {
             EstacionesData.getEstacionesPorLinea(lineaSeleccionada)
         }
-        
+
         if (query.isBlank()) {
             estaciones
         } else {
-            estaciones.filter { 
+            estaciones.filter {
                 it.nombre.contains(query, ignoreCase = true) ||
-                it.distrito.contains(query, ignoreCase = true)
+                        it.distrito.contains(query, ignoreCase = true)
             }
         }
     }
-    
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -52,7 +54,9 @@ fun EstacionesScreenSimple(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFE30613)
+                    containerColor = Color(0xFFE30613),
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
                 )
             )
         }
@@ -74,7 +78,7 @@ fun EstacionesScreenSimple(
                     modifier = Modifier.fillMaxWidth()
                 )
             }
-            
+
             item {
                 // Filtros por línea
                 Row(
@@ -98,7 +102,7 @@ fun EstacionesScreenSimple(
                     )
                 }
             }
-            
+
             item {
                 Text(
                     text = "Estaciones (${estacionesFiltradas.size})",
@@ -106,18 +110,82 @@ fun EstacionesScreenSimple(
                     fontWeight = FontWeight.Bold
                 )
             }
-            
+
             items(estacionesFiltradas) { estacion ->
-                EstacionCardSimple(estacion = estacion)
+                EstacionCardSimple(
+                    estacion = estacion,
+                    onClick = { estacionSeleccionada = estacion }
+                )
             }
         }
+    }
+
+    // Diálogo de información de estación
+    estacionSeleccionada?.let { estacion ->
+        AlertDialog(
+            onDismissRequest = { estacionSeleccionada = null },
+            title = {
+                Column {
+                    Text(
+                        text = estacion.nombre,
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = estacion.linea,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color(0xFFE30613)
+                    )
+                }
+            },
+            text = {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    InfoRow(
+                        icon = Icons.Filled.Info,
+                        label = "Distrito",
+                        value = estacion.distrito
+                    )
+
+                    InfoRow(
+                        icon = Icons.Filled.Info,
+                        label = "Orden",
+                        value = "Estación ${estacion.orden}"
+                    )
+
+                    if (estacion.linea == "Línea 2") {
+                        Card(
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color(0xFFFFD700).copy(alpha = 0.2f)
+                            )
+                        ) {
+                            Text(
+                                text = "⚠️ Esta estación está en construcción",
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.padding(12.dp)
+                            )
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { estacionSeleccionada = null }) {
+                    Text("Cerrar")
+                }
+            }
+        )
     }
 }
 
 @Composable
-fun EstacionCardSimple(estacion: Estacion) {
+fun EstacionCardSimple(
+    estacion: Estacion,
+    onClick: () -> Unit = {}
+) {
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onClick
     ) {
         Row(
             modifier = Modifier
@@ -128,27 +196,33 @@ fun EstacionCardSimple(estacion: Estacion) {
             // Indicador de línea
             Box(
                 modifier = Modifier
-                    .size(12.dp)
+                    .size(40.dp)
                     .padding(end = 12.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(12.dp)
-                        .padding(2.dp),
-                    contentAlignment = Alignment.Center
+                Surface(
+                    modifier = Modifier.size(32.dp),
+                    shape = MaterialTheme.shapes.small,
+                    color = when (estacion.linea) {
+                        "Línea 1" -> Color(0xFFE30613)
+                        "Línea 2" -> Color(0xFFFFD700)
+                        else -> MaterialTheme.colorScheme.primary
+                    }
                 ) {
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(1.dp)
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.fillMaxSize()
                     ) {
-                        // Círculo de color de la línea
-                        androidx.compose.foundation.shape.CircleShape
+                        Text(
+                            text = estacion.orden.toString(),
+                            color = if (estacion.linea == "Línea 2") Color.Black else Color.White,
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
                     }
                 }
             }
-            
+
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -168,7 +242,7 @@ fun EstacionCardSimple(estacion: Estacion) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            
+
             // Estado de la estación
             if (estacion.linea == "Línea 2") {
                 Card(
@@ -190,6 +264,37 @@ fun EstacionCardSimple(estacion: Estacion) {
                     modifier = Modifier.size(20.dp)
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun InfoRow(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    value: String
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(20.dp)
+        )
+        Column {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = value,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium
+            )
         }
     }
 }
