@@ -8,6 +8,8 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,18 +19,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.proyecto.myapplication.data.EstacionesData
 import com.proyecto.myapplication.data.Estacion
+import com.proyecto.myapplication.data.FavoritosManagerSingleton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlanificadorScreenSimple(
     onNavigateBack: () -> Unit
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val favoritosManager = remember { FavoritosManagerSingleton.getInstance(context) }
+    val favoritos by favoritosManager.favoritos.collectAsState()
+    
     var estacionOrigen by remember { mutableStateOf<Estacion?>(null) }
     var estacionDestino by remember { mutableStateOf<Estacion?>(null) }
     var mostrarEstaciones by remember { mutableStateOf(false) }
     var seleccionandoOrigen by remember { mutableStateOf(true) }
     var query by remember { mutableStateOf("") }
     var rutaCalculada by remember { mutableStateOf<List<Estacion>?>(null) }
+    var mostrarMensajeFavorito by remember { mutableStateOf(false) }
     
     val estacionesFiltradas = remember(query) {
         EstacionesData.buscarEstaciones(query)
@@ -230,14 +238,71 @@ fun PlanificadorScreenSimple(
             }
             
             item {
-                Button(
-                    onClick = { calcularRuta() },
-                    enabled = estacionOrigen != null && estacionDestino != null,
-                    modifier = Modifier.fillMaxWidth()
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Icon(Icons.Filled.ArrowForward, contentDescription = "Calcular ruta")
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Calcular Ruta")
+                    Button(
+                        onClick = { calcularRuta() },
+                        enabled = estacionOrigen != null && estacionDestino != null,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Icon(Icons.Filled.ArrowForward, contentDescription = "Calcular ruta")
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Calcular Ruta")
+                    }
+                    
+                    // Botón de favoritos
+                    if (estacionOrigen != null && estacionDestino != null) {
+                        val esFavorito = favoritosManager.esFavorito(
+                            estacionOrigen!!.nombre,
+                            estacionDestino!!.nombre
+                        )
+                        IconButton(
+                            onClick = {
+                                if (esFavorito) {
+                                    favoritosManager.eliminarFavorito("${estacionOrigen!!.nombre}_${estacionDestino!!.nombre}")
+                                } else {
+                                    favoritosManager.agregarFavorito(
+                                        estacionOrigen!!.nombre,
+                                        estacionDestino!!.nombre
+                                    )
+                                    mostrarMensajeFavorito = true
+                                }
+                            },
+                            modifier = Modifier
+                                .size(48.dp)
+                        ) {
+                            Icon(
+                                imageVector = if (esFavorito) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                                contentDescription = if (esFavorito) "Eliminar de favoritos" else "Agregar a favoritos",
+                                tint = if (esFavorito) Color(0xFFE30613) else MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
+                }
+            }
+            
+            // Snackbar para mostrar mensaje de favorito agregado
+            if (mostrarMensajeFavorito) {
+                item {
+                    LaunchedEffect(Unit) {
+                        kotlinx.coroutines.delay(2000)
+                        mostrarMensajeFavorito = false
+                    }
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer
+                        )
+                    ) {
+                        Text(
+                            text = "✓ Ruta agregada a favoritos",
+                            modifier = Modifier.padding(16.dp),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
                 }
             }
             

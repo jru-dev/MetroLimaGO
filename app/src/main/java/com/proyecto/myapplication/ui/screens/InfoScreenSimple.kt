@@ -22,11 +22,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.proyecto.myapplication.data.EstacionesData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InfoScreen(
+fun InfoScreenSimple(
     onNavigateBack: () -> Unit
 ) {
     var selectedTab by remember { mutableStateOf(0) }
@@ -136,13 +135,13 @@ fun InfoScreen(
 
             when (selectedTab) {
                 0 -> {
-                    item { ServicioInfo() }
+                    item { ServicioInfoSimple() }
                 }
                 1 -> {
-                    item { LineasInfo() }
+                    item { LineasInfoSimple() }
                 }
                 2 -> {
-                    item { EstadisticasInfo() }
+                    item { EstadisticasInfoSimple() }
                 }
             }
         }
@@ -150,7 +149,7 @@ fun InfoScreen(
 }
 
 @Composable
-private fun ServicioInfo() {
+private fun ServicioInfoSimple() {
     val serviceInfo = listOf(
         InfoItem("Horario de Operación", "5:00 AM - 11:00 PM", Icons.Filled.Info),
         InfoItem("Frecuencia", "3-5 minutos en hora pico", Icons.Filled.Info),
@@ -170,7 +169,7 @@ private fun ServicioInfo() {
 }
 
 @Composable
-private fun LineasInfo() {
+private fun LineasInfoSimple() {
     val lineas = listOf(
         LineaInfo("Línea 1", "Villa El Salvador - Bayóvar", "26 estaciones", "34.6 km", Color(0xFFE30613)),
         LineaInfo("Línea 2", "Evitamiento - Mercado Santa Anita", "5 estaciones", "En construcción", Color(0xFFFFD700))
@@ -186,11 +185,11 @@ private fun LineasInfo() {
 }
 
 @Composable
-private fun EstadisticasInfo() {
+private fun EstadisticasInfoSimple() {
     val stats = listOf(
-        StatItem("Total de Estaciones", "${EstacionesData.todasLasEstaciones.size}", Icons.Filled.Info),
-        StatItem("Estaciones Operativas", "${EstacionesData.linea1.size}", Icons.Filled.CheckCircle),
-        StatItem("En Construcción", "${EstacionesData.linea2.size}", Icons.Filled.Info),
+        StatItem("Total de Estaciones", "31", Icons.Filled.Info),
+        StatItem("Estaciones Operativas", "26", Icons.Filled.CheckCircle),
+        StatItem("En Construcción", "5", Icons.Filled.Info),
         StatItem("Distritos Atendidos", "9", Icons.Filled.LocationOn)
     )
 

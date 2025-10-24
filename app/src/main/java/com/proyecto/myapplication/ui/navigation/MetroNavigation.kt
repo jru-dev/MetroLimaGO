@@ -11,8 +11,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.proyecto.myapplication.ui.screens.HomeScreenProfessional
 import com.proyecto.myapplication.ui.screens.EstacionesScreenSimple
 import com.proyecto.myapplication.ui.screens.PlanificadorScreenSimple
-import com.proyecto.myapplication.ui.screens.InfoScreen
+import com.proyecto.myapplication.ui.screens.InfoScreenSimple
 import com.proyecto.myapplication.ui.screens.ConfiguracionScreen
+import com.proyecto.myapplication.ui.screens.FavoritosScreen
 
 @Composable
 fun MetroNavigation(navController: NavHostController) {
@@ -47,6 +48,15 @@ fun MetroNavigation(navController: NavHostController) {
                     },
                     onNavigateToPlanificador = {
                         navController.navigate("planificador")
+                    },
+                    onNavigateToFavoritos = {
+                        navController.navigate("favoritos")
+                    },
+                    onNavigateToInfo = {
+                        navController.navigate("info")
+                    },
+                    onNavigateToConfiguracion = {
+                        navController.navigate("configuracion")
                     }
                 )
             }
@@ -68,7 +78,7 @@ fun MetroNavigation(navController: NavHostController) {
             }
 
             composable("info") {
-                InfoScreen(
+                InfoScreenSimple(
                     onNavigateBack = {
                         navController.popBackStack()
                     }
@@ -79,6 +89,18 @@ fun MetroNavigation(navController: NavHostController) {
                 ConfiguracionScreen(
                     onNavigateBack = {
                         navController.popBackStack()
+                    }
+                )
+            }
+
+            composable("favoritos") {
+                FavoritosScreen(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    onNavigateToPlanificador = { origen, destino ->
+                        // Navegar al planificador con las estaciones preseleccionadas
+                        navController.navigate("planificador")
                     }
                 )
             }

@@ -13,8 +13,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -34,8 +34,8 @@ sealed class BottomNavItem(
     object Home : BottomNavItem("home", "Inicio", Icons.Filled.Home)
     object Estaciones : BottomNavItem("estaciones", "Estaciones", Icons.AutoMirrored.Filled.List)
     object Planificador : BottomNavItem("planificador", "Rutas", Icons.Filled.ArrowForward)
+    object Favoritos : BottomNavItem("favoritos", "Favoritos", Icons.Filled.Favorite)
     object Info : BottomNavItem("info", "Info", Icons.Filled.Info)
-    object Configuracion : BottomNavItem("configuracion", "Config", Icons.Filled.Settings)
 }
 
 @Composable
@@ -48,8 +48,8 @@ fun MetroBottomNavigation(
         BottomNavItem.Home,
         BottomNavItem.Estaciones,
         BottomNavItem.Planificador,
-        BottomNavItem.Info,
-        BottomNavItem.Configuracion
+        BottomNavItem.Favoritos,
+        BottomNavItem.Info
     )
 
     Card(

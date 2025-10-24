@@ -31,7 +31,10 @@ import com.proyecto.myapplication.data.model.Estacion
 @Composable
 fun HomeScreenProfessional(
     onNavigateToEstaciones: () -> Unit,
-    onNavigateToPlanificador: () -> Unit
+    onNavigateToPlanificador: () -> Unit,
+    onNavigateToFavoritos: () -> Unit = {},
+    onNavigateToInfo: () -> Unit = {},
+    onNavigateToConfiguracion: () -> Unit = {}
 ) {
     var estacionOrigen by remember { mutableStateOf<Estacion?>(null) }
     var estacionDestino by remember { mutableStateOf<Estacion?>(null) }
@@ -232,6 +235,10 @@ private fun QuickActionsSection(
                     modifier = Modifier.weight(1f)
                 )
             }
+            
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            // Los botones de Información y Configuración están disponibles en la navegación inferior
         }
     }
 }

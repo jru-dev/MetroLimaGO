@@ -24,7 +24,9 @@ import androidx.compose.ui.unit.sp
 fun ConfiguracionScreen(
     onNavigateBack: () -> Unit
 ) {
-    var isDarkTheme by remember { mutableStateOf(false) }
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val themeManager = remember { com.proyecto.myapplication.ui.theme.ThemeManagerSingleton.getInstance(context) }
+    val isDarkTheme by themeManager.isDarkTheme.collectAsState()
     var notificationsEnabled by remember { mutableStateOf(true) }
     var locationEnabled by remember { mutableStateOf(true) }
     var autoUpdate by remember { mutableStateOf(true) }
@@ -113,7 +115,7 @@ fun ConfiguracionScreen(
                         trailing = {
                             Switch(
                                 checked = isDarkTheme,
-                                onCheckedChange = { isDarkTheme = it }
+                                onCheckedChange = { themeManager.setDarkTheme(it) }
                             )
                         }
                     )
