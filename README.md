@@ -1,63 +1,56 @@
 # MetroLima GO 🚇
 
-Una aplicación móvil para planificar viajes en el Metro de Lima, desarrollada con Android Jetpack Compose.
+<div align="center">
 
-## 🎯 Características
+![Version](https://img.shields.io/badge/Version-1.0.0-blue)
+![Android](https://img.shields.io/badge/Platform-Android-green)
+![Kotlin](https://img.shields.io/badge/Language-Kotlin-purple)
 
-- **Consulta de Estaciones**: Información detallada de todas las estaciones del Metro de Lima
-- **Planificación de Rutas**: Calcula la mejor ruta entre estaciones con algoritmo inteligente
-- **Búsqueda Inteligente**: Encuentra estaciones por nombre o línea con filtros avanzados
-- **Rutas Favoritas**: Guarda y gestiona tus rutas preferidas
-- **Alertas en Tiempo Real**: Información actualizada sobre retrasos y mantenimiento
-- **Modo Oscuro/Claro**: Personaliza la apariencia de la aplicación
-- **Interfaz Moderna**: Diseño con Material 3, animaciones y Jetpack Compose
-- **Base de Datos Local**: Almacenamiento offline con Room
-- **API Externa**: Integración con servicios del Metro de Lima
+**Aplicación móvil para planificar viajes en el Metro de Lima**
 
-## 🛠️ Tecnologías Utilizadas
+</div>
 
-- **Android Jetpack Compose** - UI moderna y declarativa
+---
+
+## 📱 Sobre el Proyecto
+
+MetroLima GO es una aplicación Android moderna que ayuda a los usuarios a planificar sus viajes en el Metro de Lima. Desarrollada con Jetpack Compose y siguiendo las mejores prácticas de Android.
+
+---
+
+## ✨ Características
+
+- 🚉 **Consulta de Estaciones** - Más de 30 estaciones con información completa
+- 🗺️ **Planificador de Rutas** - Calcula la mejor ruta entre dos estaciones
+- ⭐ **Rutas Favoritas** - Guarda tus rutas más usadas
+- 🔔 **Alertas** - Información sobre retrasos y mantenimiento
+- 🌙 **Modo Oscuro** - Tema claro y oscuro personalizados
+- 🌐 **Multiidioma** - Soporte para Español e Inglés
+
+---
+
+## 🛠️ Tecnologías
+
+- **Jetpack Compose** - UI moderna
 - **Room** - Base de datos local
-- **Retrofit** - Consumo de APIs REST
+- **Retrofit** - Consumo de APIs
 - **Hilt** - Inyección de dependencias
-- **Navigation Compose** - Navegación entre pantallas
 - **Coroutines** - Programación asíncrona
-- **Material 3** - Sistema de diseño moderno
+- **Material 3** - Diseño moderno
 
-## 📱 Pantallas
+---
 
-### 1. Pantalla Principal (Home)
-- Banner de bienvenida
-- Acceso rápido a todas las funcionalidades
-- Información del servicio del Metro
+## 📋 Requisitos
 
-### 2. Lista de Estaciones
-- Listado completo de estaciones
-- Búsqueda por nombre
-- Filtros por línea
-- Información de accesibilidad
+- Android Studio Arctic Fox o superior
+- Android SDK 26 (Android 8.0) o superior
+- Kotlin 2.0.21 o superior
 
-### 3. Detalle de Estación
-- Información completa de la estación
-- Horarios de operación
-- Servicios disponibles
-- Ubicación en el mapa
-
-### 4. Planificador de Rutas
-- Selección de origen y destino
-- Cálculo de tiempo estimado
-- Estaciones intermedias
-- Rutas favoritas
-
-### 5. Configuración
-- Modo oscuro/claro
-- Selección de idioma
-- Notificaciones
-- Información de la aplicación
+---
 
 ## 🚀 Instalación
 
-1. Clona el repositorio:
+1. Clona el repositorio
 ```bash
 git clone https://github.com/tu-usuario/metrolima-go.git
 ```
@@ -68,94 +61,121 @@ git clone https://github.com/tu-usuario/metrolima-go.git
 
 4. Ejecuta la aplicación en un dispositivo o emulador
 
-## 📋 Requisitos
+---
 
-- Android Studio Arctic Fox o superior
-- Android SDK 26 (Android 8.0) o superior
-- Kotlin 1.8.0 o superior
-
-## 🏗️ Estructura del Proyecto
+## 📂 Estructura del Proyecto
 
 ```
 app/
-├── src/main/java/com/proyecto/myapplication/
-│   ├── data/
-│   │   ├── local/          # Room database, DAOs, entidades
-│   │   ├── network/        # Retrofit, servicios de API
-│   │   ├── model/          # Modelos de datos
-│   │   └── repository/     # Repositorios
-│   ├── ui/
-│   │   ├── screens/        # Pantallas de la aplicación
-│   │   ├── components/     # Componentes reutilizables
-│   │   ├── navigation/     # Navegación entre pantallas
-│   │   ├── viewmodel/      # ViewModels
-│   │   └── theme/          # Temas y estilos
-│   ├── di/                 # Módulos de Hilt
-│   └── MainActivity.kt     # Actividad principal
+├── data/
+│   ├── local/          # Base de datos Room
+│   ├── network/        # API con Retrofit
+│   ├── model/          # Modelos de datos
+│   └── repository/     # Repositorios
+│
+├── ui/
+│   ├── screens/        # Pantallas de la app
+│   ├── components/     # Componentes reutilizables
+│   ├── navigation/     # Navegación
+│   ├── viewmodel/      # ViewModels
+│   └── theme/          # Temas y colores
+│
+└── di/                 # Inyección de dependencias
 ```
 
-## 🔧 Configuración
+---
 
-### Base de Datos
-La aplicación utiliza Room para almacenar datos localmente. Los datos se inicializan automáticamente con información mock del Metro de Lima.
+## 🎨 Pantallas Principales
 
-### API Externa
-Configura la URL base de la API en `NetworkModule.kt`:
-```kotlin
-private const val BASE_URL = "https://tu-api.com/"
-```
+### 1. Inicio
+- Acceso rápido a todas las funciones
+- Banner de bienvenida
+- Información del servicio
 
-## 📊 Datos Mock
+### 2. Estaciones
+- Lista completa de estaciones
+- Búsqueda por nombre o distrito
+- Filtros por línea
 
-La aplicación incluye datos mock de 30 estaciones de la Línea 1 del Metro de Lima, incluyendo:
-- Nombres de estaciones
-- Líneas correspondientes
-- Distritos
-- Coordenadas geográficas
-- Horarios de operación
-- Servicios disponibles
+### 3. Planificador
+- Selecciona origen y destino
+- Calcula ruta óptima
+- Muestra tiempo estimado
+- Guarda rutas favoritas
+
+### 4. Favoritos
+- Lista de rutas guardadas
+- Acceso rápido para planificar
+- Eliminar favoritos
+
+### 5. Configuración
+- Cambiar tema (claro/oscuro)
+- Seleccionar idioma
+- Información de la app
+
+---
+
+## 🗄️ Base de Datos
+
+La app incluye **30 estaciones** de la Línea 1:
+
+- Villa El Salvador → Bayóvar
+- Distritos: Villa El Salvador, Villa María del Triunfo, San Juan de Miraflores, La Victoria, El Agustino, Santa Anita, San Juan de Lurigancho, Independencia
+
+**5 estaciones** de la Línea 2 (en construcción):
+- Evitamiento → Mercado Santa Anita
+
+---
 
 ## 🎨 Personalización
 
 ### Temas
-La aplicación soporta modo claro y oscuro con colores personalizados del Metro de Lima.
+- **Tema Claro**: Amarillo dorado con azul navy
+- **Tema Oscuro**: Azul navy oscuro con detalles amarillos
 
 ### Idiomas
-Soporte para español e inglés (configurable en la pantalla de configuración).
+- Español (por defecto)
+- English
 
-## 🚧 Próximas Funcionalidades
+---
 
-- [ ] Integración con mapas reales
-- [ ] Notificaciones push
-- [ ] Historial de viajes
-- [ ] Calculadora de tarifas
-- [ ] Información de tráfico en tiempo real
-- [ ] Integración con transporte complementario
+## 🔧 Funcionalidades Técnicas
+
+### Sistema de Favoritos
+- Almacenamiento local con SharedPreferences
+- Máximo 10 rutas favoritas
+- Sincronización en tiempo real
+
+### Planificador de Rutas
+- Algoritmo de búsqueda de ruta
+- Cálculo de tiempo estimado (2 min por estación)
+- Detección de transbordos entre líneas
+
+### Base de Datos Local
+- Room Database con 4 tablas
+- Datos mock precargados
+- TypeConverters para tipos complejos
+
+
+---
+
+## 👥 Equipo de Desarrollo
+
+- **Alanya Leonardo** - Desarrollador
+- **Alva Sebastian** - Desarrollador
+- **Pasco Gianmarco** - Desarrollador
+- **Azañero Vidal** - Desarrollador
+
+---
 
 ## 🤝 Contribuciones
 
 Las contribuciones son bienvenidas. Por favor:
 
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
+1. Haz fork del proyecto
+2. Crea una rama (`git checkout -b feature/nueva-funcionalidad`)
+3. Commit tus cambios (`git commit -m 'Agrega nueva funcionalidad'`)
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
 5. Abre un Pull Request
 
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
-
-## 👥 Autores
-
-- **Tu Nombre** - *Desarrollo inicial* - [tu-github](https://github.com/tu-usuario)
-
-## 🙏 Agradecimientos
-
-- Metro de Lima por la información pública
-- Comunidad de Android por las librerías open source
-- Google por Jetpack Compose
-
 ---
-
-**MetroLima GO** - Planifica tu viaje en el Metro de Lima de manera fácil y rápida! 🚇✨
