@@ -52,7 +52,9 @@ fun EstacionesScreenSimple(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFE30613)
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         }
@@ -160,7 +162,7 @@ fun EstacionCardSimple(estacion: Estacion) {
                 Text(
                     text = estacion.linea,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFFE30613)
+                    color = MaterialTheme.colorScheme.primary
                 )
                 Text(
                     text = estacion.distrito,

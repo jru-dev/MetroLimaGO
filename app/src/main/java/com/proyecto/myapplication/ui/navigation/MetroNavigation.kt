@@ -77,13 +77,6 @@ fun MetroNavigation(navController: NavHostController) {
                 )
             }
 
-            composable("info") {
-                InfoScreenSimple(
-                    onNavigateBack = {
-                        navController.popBackStack()
-                    }
-                )
-            }
 
             composable("configuracion") {
                 ConfiguracionScreen(
