@@ -77,6 +77,10 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     ksp(libs.hilt.compiler)
     
+    // Google Maps
+    implementation("com.google.maps.android:maps-compose:5.0.0")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

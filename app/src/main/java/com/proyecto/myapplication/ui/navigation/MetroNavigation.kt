@@ -16,6 +16,7 @@ import com.proyecto.myapplication.ui.screens.ConfiguracionScreen
 import com.proyecto.myapplication.ui.screens.FavoritosScreen
 import com.proyecto.myapplication.ui.screens.SeguridadScreen
 import com.proyecto.myapplication.ui.screens.TarifasScreen
+import com.proyecto.myapplication.ui.screens.MapaScreen
 
 @Composable
 fun MetroNavigation(navController: NavHostController) {
@@ -65,6 +66,9 @@ fun MetroNavigation(navController: NavHostController) {
                     },
                     onNavigateToTarifas = {
                         navController.navigate("tarifas")
+                    },
+                    onNavigateToMapa = {
+                        navController.navigate("mapa")
                     }
                 )
             }
@@ -130,6 +134,14 @@ fun MetroNavigation(navController: NavHostController) {
 
             composable("seguridad") {
                 SeguridadScreen(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable("mapa") {
+                MapaScreen(
                     onNavigateBack = {
                         navController.popBackStack()
                     }

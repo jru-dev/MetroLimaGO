@@ -39,7 +39,8 @@ fun HomeScreenProfessional(
     onNavigateToInfo: () -> Unit = {},
     onNavigateToConfiguracion: () -> Unit = {},
     onNavigateToSeguridad: () -> Unit = {},
-    onNavigateToTarifas: () -> Unit = {}
+    onNavigateToTarifas: () -> Unit = {},
+    onNavigateToMapa: () -> Unit = {}
 ) {
     var estacionOrigen by remember { mutableStateOf<Estacion?>(null) }
     var estacionDestino by remember { mutableStateOf<Estacion?>(null) }
@@ -117,7 +118,7 @@ fun HomeScreenProfessional(
             when (selectedTab) {
                 0 -> {
                     // Contenido principal
-                    item { InfoLinksSection(onNavigateToSeguridad, onNavigateToTarifas, onNavigateToInfo) }
+                    item { InfoLinksSection(onNavigateToSeguridad, onNavigateToTarifas, onNavigateToInfo, onNavigateToMapa) }
                     item { ServiceInfoSection() }
                 }
                 1 -> {
@@ -202,7 +203,8 @@ private fun AnimatedHeader() {
 private fun InfoLinksSection(
     onNavigateToSeguridad: () -> Unit,
     onNavigateToTarifas: () -> Unit,
-    onNavigateToInfo: () -> Unit
+    onNavigateToInfo: () -> Unit,
+    onNavigateToMapa: () -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -245,13 +247,25 @@ private fun InfoLinksSection(
                     )
                 }
                 
-                QuickActionButton(
-                    title = "Información del Metro",
-                    icon = Icons.Filled.Info,
-                    color = MaterialTheme.colorScheme.tertiary,
-                    onClick = onNavigateToInfo,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    QuickActionButton(
+                        title = "Información del Metro",
+                        icon = Icons.Filled.Info,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        onClick = onNavigateToInfo,
+                        modifier = Modifier.weight(1f)
+                    )
+                    QuickActionButton(
+                        title = "Mapa",
+                        icon = Icons.Filled.LocationOn,
+                        color = MaterialTheme.colorScheme.primary,
+                        onClick = onNavigateToMapa,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
             }
         }
     }
