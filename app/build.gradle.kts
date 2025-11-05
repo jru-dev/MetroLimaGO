@@ -71,6 +71,7 @@ dependencies {
     
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
     
     // Hilt
     implementation(libs.hilt.android)
@@ -80,6 +81,7 @@ dependencies {
     // Google Maps
     implementation("com.google.maps.android:maps-compose:5.0.0")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
     
     // Testing
     testImplementation(libs.junit)
