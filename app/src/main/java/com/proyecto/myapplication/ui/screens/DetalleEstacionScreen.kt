@@ -4,8 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,6 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.proyecto.myapplication.data.FavoritosManagerSingleton
+import com.proyecto.myapplication.data.ServiciosData
+import com.proyecto.myapplication.data.model.TipoServicio
 import com.proyecto.myapplication.ui.components.InfoCard
 import com.proyecto.myapplication.ui.viewmodel.DetalleEstacionViewModel
 
@@ -24,9 +26,21 @@ fun DetalleEstacionScreen(
     viewModel: DetalleEstacionViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val favoritosManager = remember { FavoritosManagerSingleton.getInstance(context) }
     
     LaunchedEffect(estacionId) {
         viewModel.loadEstacion(estacionId)
+    }
+    
+    val estacion = uiState.estacion
+    val favoritosEstaciones by favoritosManager.favoritosEstaciones.collectAsState()
+    val esFavorita = remember(estacion?.id, favoritosEstaciones) {
+        estacion?.id?.let { favoritosManager.esEstacionFavorita(it) } ?: false
+    }
+    
+    val servicios = remember(estacionId) {
+        ServiciosData.getServiciosPorEstacion(estacionId)
     }
     
     Scaffold(
@@ -40,6 +54,25 @@ fun DetalleEstacionScreen(
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "Volver")
+                    }
+                },
+                actions = {
+                    estacion?.let {
+                        IconButton(
+                            onClick = {
+                                if (esFavorita) {
+                                    favoritosManager.eliminarEstacionFavorita(it.id)
+                                } else {
+                                    favoritosManager.agregarEstacionFavorita(it.id, it.nombre, it.linea)
+                                }
+                            }
+                        ) {
+                            Icon(
+                                imageVector = if (esFavorita) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                                contentDescription = if (esFavorita) "Eliminar de favoritos" else "Agregar a favoritos",
+                                tint = if (esFavorita) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                            )
+                        }
                     }
                 }
             )
@@ -163,7 +196,7 @@ fun DetalleEstacionScreen(
                     
                     item {
                         Text(
-                            text = "Servicios Disponibles",
+                            text = "Servicios de la Estación",
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold
                         )
@@ -175,13 +208,13 @@ fun DetalleEstacionScreen(
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
                             ServiceCard(
-                                icon = Icons.Filled.Info,
+                                icon = Icons.Filled.CheckCircle,
                                 title = "Accesible",
                                 isAvailable = estacion.tieneAcceso
                             )
                             
                             ServiceCard(
-                                icon = Icons.Filled.Info,
+                                icon = Icons.Filled.LocationOn,
                                 title = "Estacionamiento",
                                 isAvailable = estacion.tieneEstacionamiento
                             )
@@ -191,6 +224,20 @@ fun DetalleEstacionScreen(
                                 title = "Bicicletero",
                                 isAvailable = estacion.tieneBicicletero
                             )
+                        }
+                    }
+                    
+                    if (servicios.isNotEmpty()) {
+                        item {
+                            Text(
+                                text = "Servicios Cercanos",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        
+                        items(servicios) { servicio ->
+                            ServicioCercanoCard(servicio = servicio)
                         }
                     }
                 }
@@ -239,6 +286,62 @@ fun ServiceCard(
                     MaterialTheme.colorScheme.onPrimaryContainer 
                 else 
                     MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+fun ServicioCercanoCard(servicio: com.proyecto.myapplication.data.model.ServicioEstacion) {
+    val icon = when (servicio.tipo) {
+        TipoServicio.RESTAURANTE -> Icons.Filled.Info
+        TipoServicio.BANCO -> Icons.Filled.Info
+        TipoServicio.FARMACIA -> Icons.Filled.Info
+        TipoServicio.UNIVERSIDAD -> Icons.Filled.Info
+        TipoServicio.HOSPITAL -> Icons.Filled.Info
+        TipoServicio.COMERCIO -> Icons.Filled.ShoppingCart
+        TipoServicio.HOTEL -> Icons.Filled.Place
+        TipoServicio.PARQUE -> Icons.Filled.Place
+        TipoServicio.OTRO -> Icons.Filled.Place
+    }
+    
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = servicio.tipo.name,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(32.dp)
+            )
+            
+            Spacer(modifier = Modifier.width(16.dp))
+            
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = servicio.nombre,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Medium
+                )
+                if (servicio.descripcion != null) {
+                    Text(
+                        text = servicio.descripcion,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+            
+            Text(
+                text = "${servicio.distancia}m",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.primary
             )
         }
     }

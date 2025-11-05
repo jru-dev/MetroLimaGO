@@ -14,6 +14,8 @@ import com.proyecto.myapplication.ui.screens.PlanificadorScreenSimple
 import com.proyecto.myapplication.ui.screens.InfoScreenSimple
 import com.proyecto.myapplication.ui.screens.ConfiguracionScreen
 import com.proyecto.myapplication.ui.screens.FavoritosScreen
+import com.proyecto.myapplication.ui.screens.SeguridadScreen
+import com.proyecto.myapplication.ui.screens.TarifasScreen
 
 @Composable
 fun MetroNavigation(navController: NavHostController) {
@@ -57,6 +59,12 @@ fun MetroNavigation(navController: NavHostController) {
                     },
                     onNavigateToConfiguracion = {
                         navController.navigate("configuracion")
+                    },
+                    onNavigateToSeguridad = {
+                        navController.navigate("seguridad")
+                    },
+                    onNavigateToTarifas = {
+                        navController.navigate("tarifas")
                     }
                 )
             }
@@ -94,6 +102,36 @@ fun MetroNavigation(navController: NavHostController) {
                     onNavigateToPlanificador = { origen, destino ->
                         // Navegar al planificador con las estaciones preseleccionadas
                         navController.navigate("planificador")
+                    }
+                )
+            }
+
+            composable("info") {
+                InfoScreenSimple(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    onNavigateToTarifas = {
+                        navController.navigate("tarifas")
+                    },
+                    onNavigateToSeguridad = {
+                        navController.navigate("seguridad")
+                    }
+                )
+            }
+
+            composable("tarifas") {
+                TarifasScreen(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable("seguridad") {
+                SeguridadScreen(
+                    onNavigateBack = {
+                        navController.popBackStack()
                     }
                 )
             }
