@@ -26,10 +26,10 @@ import androidx.compose.ui.unit.sp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InfoScreenSimple(
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onNavigateToTarifas: () -> Unit = {},
+    onNavigateToSeguridad: () -> Unit = {}
 ) {
-    var selectedTab by remember { mutableStateOf(0) }
-    val tabs = listOf("Servicio", "Líneas", "Estadísticas")
 
     Scaffold(
         topBar = {
@@ -110,46 +110,21 @@ fun InfoScreenSimple(
                 }
             }
 
-            item {
-                // Tabs
-                TabRow(
-                    selectedTabIndex = selectedTab,
-                    modifier = Modifier.fillMaxWidth(),
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                ) {
-                    tabs.forEachIndexed { index, title ->
-                        Tab(
-                            selected = selectedTab == index,
-                            onClick = { selectedTab = index },
-                            text = { 
-                                Text(
-                                    title,
-                                    fontWeight = if (selectedTab == index) FontWeight.Bold else FontWeight.Normal
-                                ) 
-                            }
-                        )
-                    }
-                }
-            }
-
-            when (selectedTab) {
-                0 -> {
-                    item { ServicioInfoSimple() }
-                }
-                1 -> {
-                    item { LineasInfoSimple() }
-                }
-                2 -> {
-                    item { EstadisticasInfoSimple() }
-                }
+            item { 
+                ServicioInfoSimple(
+                    onNavigateToTarifas = onNavigateToTarifas,
+                    onNavigateToSeguridad = onNavigateToSeguridad
+                ) 
             }
         }
     }
 }
 
 @Composable
-private fun ServicioInfoSimple() {
+private fun ServicioInfoSimple(
+    onNavigateToTarifas: () -> Unit = {},
+    onNavigateToSeguridad: () -> Unit = {}
+) {
     val serviceInfo = listOf(
         InfoItem("Horario de Operación", "5:00 AM - 11:00 PM", Icons.Filled.Info),
         InfoItem("Frecuencia", "3-5 minutos en hora pico", Icons.Filled.Info),
@@ -159,48 +134,76 @@ private fun ServicioInfoSimple() {
         InfoItem("WiFi", "Gratuito en estaciones", Icons.Filled.Info)
     )
 
-    LazyColumn(
+    Column(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        items(serviceInfo) { item ->
+        // Botones de acceso rápido
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Card(
+                modifier = Modifier.weight(1f),
+                onClick = onNavigateToTarifas,
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                )
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Info,
+                        contentDescription = "Tarifas",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(32.dp)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Ver Tarifas",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+            
+            Card(
+                modifier = Modifier.weight(1f),
+                onClick = onNavigateToSeguridad,
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                )
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Info,
+                        contentDescription = "Seguridad",
+                        tint = MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier.size(32.dp)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Consejos de Seguridad",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+        
+        // Información del servicio
+        serviceInfo.forEach { item ->
             ServiceInfoCard(item = item)
         }
     }
 }
 
-@Composable
-private fun LineasInfoSimple() {
-    val lineas = listOf(
-        LineaInfo("Línea 1", "Villa El Salvador - Bayóvar", "26 estaciones", "34.6 km", Color(0xFFE30613)),
-        LineaInfo("Línea 2", "Evitamiento - Mercado Santa Anita", "5 estaciones", "En construcción", Color(0xFFFFD700))
-    )
-
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        items(lineas) { linea ->
-            LineaCard(linea = linea)
-        }
-    }
-}
-
-@Composable
-private fun EstadisticasInfoSimple() {
-    val stats = listOf(
-        StatItem("Total de Estaciones", "31", Icons.Filled.Info),
-        StatItem("Estaciones Operativas", "26", Icons.Filled.CheckCircle),
-        StatItem("En Construcción", "5", Icons.Filled.Info),
-        StatItem("Distritos Atendidos", "9", Icons.Filled.LocationOn)
-    )
-
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        items(stats) { stat ->
-            StatCard(stat = stat)
-        }
-    }
-}
 
 @Composable
 private fun ServiceInfoCard(item: InfoItem) {
@@ -239,111 +242,7 @@ private fun ServiceInfoCard(item: InfoItem) {
     }
 }
 
-@Composable
-private fun LineaCard(linea: LineaInfo) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(12.dp)
-                        .clip(CircleShape)
-                        .background(linea.color)
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-                Text(
-                    text = linea.nombre,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = linea.ruta,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Text(
-                    text = linea.estaciones,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                Text(
-                    text = linea.longitud,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun StatCard(stat: StatItem) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = stat.icon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = stat.title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-            Text(
-                text = stat.value,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-    }
-}
-
 data class InfoItem(
-    val title: String,
-    val value: String,
-    val icon: androidx.compose.ui.graphics.vector.ImageVector
-)
-
-data class LineaInfo(
-    val nombre: String,
-    val ruta: String,
-    val estaciones: String,
-    val longitud: String,
-    val color: Color
-)
-
-data class StatItem(
     val title: String,
     val value: String,
     val icon: androidx.compose.ui.graphics.vector.ImageVector

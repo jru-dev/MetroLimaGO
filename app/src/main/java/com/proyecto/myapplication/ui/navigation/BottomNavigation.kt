@@ -14,7 +14,8 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Settings
+import com.proyecto.myapplication.ui.localization.LocalizedStrings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -31,11 +32,11 @@ sealed class BottomNavItem(
     val icon: ImageVector,
     val selectedIcon: ImageVector = icon
 ) {
-    object Home : BottomNavItem("home", "Inicio", Icons.Filled.Home)
-    object Estaciones : BottomNavItem("estaciones", "Estaciones", Icons.AutoMirrored.Filled.List)
-    object Planificador : BottomNavItem("planificador", "Rutas", Icons.Filled.ArrowForward)
-    object Favoritos : BottomNavItem("favoritos", "Favoritos", Icons.Filled.Favorite)
-    object Info : BottomNavItem("info", "Info", Icons.Filled.Info)
+    object Home : BottomNavItem("home", "home", Icons.Filled.Home)
+    object Estaciones : BottomNavItem("estaciones", "stations", Icons.AutoMirrored.Filled.List)
+    object Planificador : BottomNavItem("planificador", "routes", Icons.Filled.ArrowForward)
+    object Favoritos : BottomNavItem("favoritos", "favorites", Icons.Filled.Favorite)
+    object Configuracion : BottomNavItem("configuracion", "configuration", Icons.Filled.Settings)
 }
 
 @Composable
@@ -49,7 +50,7 @@ fun MetroBottomNavigation(
         BottomNavItem.Estaciones,
         BottomNavItem.Planificador,
         BottomNavItem.Favoritos,
-        BottomNavItem.Info
+        BottomNavItem.Configuracion
     )
 
     Card(
@@ -139,7 +140,7 @@ private fun BottomNavItem(
             }
 
             Text(
-                text = item.title,
+                text = LocalizedStrings.getString(item.title),
                 style = MaterialTheme.typography.labelSmall,
                 fontSize = 10.sp,
                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,

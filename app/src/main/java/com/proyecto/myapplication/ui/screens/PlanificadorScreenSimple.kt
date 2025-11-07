@@ -75,7 +75,9 @@ fun PlanificadorScreenSimple(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFE30613)
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         }
@@ -276,7 +278,7 @@ fun PlanificadorScreenSimple(
                             Icon(
                                 imageVector = if (esFavorito) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                                 contentDescription = if (esFavorito) "Eliminar de favoritos" else "Agregar a favoritos",
-                                tint = if (esFavorito) Color(0xFFE30613) else MaterialTheme.colorScheme.onSurface
+                                tint = if (esFavorito) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }
@@ -336,7 +338,7 @@ fun PlanificadorScreenSimple(
                                 Icon(
                                     Icons.Filled.Info,
                                     contentDescription = null,
-                                    tint = Color(0xFFE30613)
+                                    tint = MaterialTheme.colorScheme.primary
                                 )
                             }
                             
@@ -366,7 +368,7 @@ fun PlanificadorScreenSimple(
                                 Text(
                                     text = "Línea: ${estacionOrigen!!.linea}",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = Color(0xFFE30613)
+                                    color = MaterialTheme.colorScheme.primary
                                 )
                             } else {
                                 Text(

@@ -10,6 +10,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
+import com.proyecto.myapplication.ui.localization.LocalizationManager
+import com.proyecto.myapplication.ui.localization.LocalizedStrings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,16 +29,21 @@ fun ConfiguracionScreen(
     val context = androidx.compose.ui.platform.LocalContext.current
     val themeManager = remember { com.proyecto.myapplication.ui.theme.ThemeManagerSingleton.getInstance(context) }
     val isDarkTheme by themeManager.isDarkTheme.collectAsState()
-    var notificationsEnabled by remember { mutableStateOf(true) }
-    var locationEnabled by remember { mutableStateOf(true) }
-    var autoUpdate by remember { mutableStateOf(true) }
+    
+    // Inicializar LocalizationManager
+    LaunchedEffect(Unit) {
+        LocalizationManager.initialize(context)
+    }
+    
+    val currentLanguage by LocalizationManager.languageFlow.collectAsState()
+    var showLanguageDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { 
                     Text(
-                        "Configuración",
+                        LocalizedStrings.getString("configuration"),
                         fontWeight = FontWeight.Bold
                     ) 
                 },
@@ -44,7 +51,7 @@ fun ConfiguracionScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack, 
-                            contentDescription = "Volver"
+                            contentDescription = LocalizedStrings.getString("back")
                         )
                     }
                 },
@@ -109,9 +116,9 @@ fun ConfiguracionScreen(
                     icon = Icons.Filled.Settings
                 ) {
                     ConfigItem(
-                        title = "Modo Oscuro",
-                        subtitle = "Cambiar entre tema claro y oscuro",
-                        icon = Icons.Filled.Info,
+                        title = LocalizedStrings.getString("dark_mode"),
+                        subtitle = if (currentLanguage == "es") "Cambiar entre tema claro y oscuro" else "Switch between light and dark theme",
+                        icon = Icons.Filled.Settings,
                         trailing = {
                             Switch(
                                 checked = isDarkTheme,
@@ -122,99 +129,74 @@ fun ConfiguracionScreen(
                 }
             }
 
-            // Sección de Notificaciones
+            // Sección de Idioma
             item {
                 ConfigSection(
-                    title = "Notificaciones",
-                    icon = Icons.Filled.Notifications
+                    title = "Idioma",
+                    icon = Icons.Filled.Settings
                 ) {
                     ConfigItem(
-                        title = "Alertas del Metro",
-                        subtitle = "Recibir notificaciones sobre el servicio",
-                        icon = Icons.Filled.Notifications,
-                        trailing = {
-                            Switch(
-                                checked = notificationsEnabled,
-                                onCheckedChange = { notificationsEnabled = it }
-                            )
-                        }
+                        title = LocalizedStrings.getString("language"),
+                        subtitle = if (currentLanguage == "es") "Seleccionar idioma de la interfaz" else "Select interface language",
+                        icon = Icons.Filled.Settings,
+                        onClick = { showLanguageDialog = true }
                     )
                 }
             }
 
-            // Sección de Ubicación
-            item {
-                ConfigSection(
-                    title = "Ubicación",
-                    icon = Icons.Filled.LocationOn
-                ) {
-                    ConfigItem(
-                        title = "Ubicación Automática",
-                        subtitle = "Detectar estación más cercana",
-                        icon = Icons.Filled.LocationOn,
-                        trailing = {
-                            Switch(
-                                checked = locationEnabled,
-                                onCheckedChange = { locationEnabled = it }
-                            )
-                        }
-                    )
-                }
-            }
-
-            // Sección de Datos
-            item {
-                ConfigSection(
-                    title = "Datos",
-                    icon = Icons.Filled.Info
-                ) {
-                    ConfigItem(
-                        title = "Actualización Automática",
-                        subtitle = "Descargar datos del Metro automáticamente",
-                        icon = Icons.Filled.Refresh,
-                        trailing = {
-                            Switch(
-                                checked = autoUpdate,
-                                onCheckedChange = { autoUpdate = it }
-                            )
-                        }
-                    )
-                    ConfigItem(
-                        title = "Limpiar Cache",
-                        subtitle = "Liberar espacio de almacenamiento",
-                        icon = Icons.Filled.Delete,
-                        onClick = { /* Limpiar cache */ }
-                    )
-                }
-            }
-
-            // Sección de Información
-            item {
-                ConfigSection(
-                    title = "Información",
-                    icon = Icons.Filled.Info
-                ) {
-                    ConfigItem(
-                        title = "Versión de la App",
-                        subtitle = "1.0.0",
-                        icon = Icons.Filled.Info,
-                        onClick = { /* Mostrar info de versión */ }
-                    )
-                    ConfigItem(
-                        title = "Términos y Condiciones",
-                        subtitle = "Leer términos de uso",
-                        icon = Icons.Filled.Info,
-                        onClick = { /* Mostrar términos */ }
-                    )
-                    ConfigItem(
-                        title = "Política de Privacidad",
-                        subtitle = "Cómo usamos tus datos",
-                        icon = Icons.Filled.Info,
-                        onClick = { /* Mostrar política */ }
-                    )
-                }
-            }
         }
+    }
+
+    // Diálogo de selección de idioma
+    if (showLanguageDialog) {
+        AlertDialog(
+            onDismissRequest = { showLanguageDialog = false },
+            title = {
+                Text(
+                    text = LocalizedStrings.getString("select_language"),
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Column {
+                    val languages = listOf(
+                        "es" to LocalizedStrings.getString("spanish"),
+                        "en" to LocalizedStrings.getString("english")
+                    )
+                    
+                    languages.forEach { (code, name) ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { 
+                                    LocalizationManager.setLanguage(context, code)
+                                    showLanguageDialog = false
+                                }
+                                .padding(vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = currentLanguage == code,
+                                onClick = { 
+                                    LocalizationManager.setLanguage(context, code)
+                                    showLanguageDialog = false
+                                }
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = name,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showLanguageDialog = false }) {
+                    Text(LocalizedStrings.getString("close"))
+                }
+            }
+        )
     }
 }
 

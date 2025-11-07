@@ -20,14 +20,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.proyecto.myapplication.data.EstacionesData
-import com.proyecto.myapplication.data.Estacion
 import com.proyecto.myapplication.data.FavoritosManagerSingleton
 import com.proyecto.myapplication.data.RutaFavorita
+import com.proyecto.myapplication.data.model.Estacion
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,37 +37,42 @@ fun HomeScreenProfessional(
     onNavigateToPlanificador: () -> Unit,
     onNavigateToFavoritos: () -> Unit = {},
     onNavigateToInfo: () -> Unit = {},
-    onNavigateToConfiguracion: () -> Unit = {}
+    onNavigateToConfiguracion: () -> Unit = {},
+    onNavigateToSeguridad: () -> Unit = {},
+    onNavigateToTarifas: () -> Unit = {},
+    onNavigateToMapa: () -> Unit = {}
 ) {
-    val context = androidx.compose.ui.platform.LocalContext.current
-    val favoritosManager = remember { FavoritosManagerSingleton.getInstance(context) }
-    val favoritos by favoritosManager.favoritos.collectAsState()
-
     var estacionOrigen by remember { mutableStateOf<Estacion?>(null) }
     var estacionDestino by remember { mutableStateOf<Estacion?>(null) }
+    var mostrarEstaciones by remember { mutableStateOf(false) }
+    var query by remember { mutableStateOf("") }
     var selectedTab by remember { mutableStateOf(0) }
-
-    val tabs = listOf("Inicio", "Rápido", "Favoritos")
-
+    
+    val estacionesFiltradas = remember(query) {
+        EstacionesData.buscarEstaciones(query)
+    }
+    
+    val tabs = listOf("Inicio", "Favoritos")
+    
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
+                title = { 
                     Text(
                         "MetroLima GO",
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimary
-                    )
+                    ) 
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
                 ),
                 actions = {
-                    IconButton(onClick = onNavigateToConfiguracion) {
+                    IconButton(onClick = { /* Notificaciones */ }) {
                         Icon(
-                            Icons.Filled.Settings,
-                            contentDescription = "Configuración",
+                            Icons.Filled.Notifications,
+                            contentDescription = "Notificaciones",
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
@@ -98,11 +104,11 @@ fun HomeScreenProfessional(
                         Tab(
                             selected = selectedTab == index,
                             onClick = { selectedTab = index },
-                            text = {
+                            text = { 
                                 Text(
                                     title,
                                     fontWeight = if (selectedTab == index) FontWeight.Bold else FontWeight.Normal
-                                )
+                                ) 
                             }
                         )
                     }
@@ -111,26 +117,16 @@ fun HomeScreenProfessional(
 
             when (selectedTab) {
                 0 -> {
-                    // Contenido principal - Inicio
-                    item { QuickActionsSection(onNavigateToEstaciones, onNavigateToPlanificador, onNavigateToInfo) }
-                    item { EstacionSelectorSection(estacionOrigen, estacionDestino, onNavigateToPlanificador) }
+                    // Contenido principal
+                    item { InfoLinksSection(onNavigateToSeguridad, onNavigateToTarifas, onNavigateToInfo, onNavigateToMapa) }
                     item { ServiceInfoSection() }
                 }
                 1 -> {
-                    // Acceso rápido
-                    item { QuickAccessSection(onNavigateToEstaciones, onNavigateToPlanificador) }
-                }
-                2 -> {
                     // Favoritos
-                    item {
-                        FavoritesSectionWithData(
-                            favoritos = favoritos,
-                            onNavigateToFavoritos = onNavigateToFavoritos,
-                            onNavigateToPlanificador = onNavigateToPlanificador,
-                            onDeleteFavorito = { id ->
-                                favoritosManager.eliminarFavorito(id)
-                            }
-                        )
+                    item { 
+                        FavoritesSection(
+                            onNavigateToPlanificador = onNavigateToPlanificador
+                        ) 
                     }
                 }
             }
@@ -204,10 +200,11 @@ private fun AnimatedHeader() {
 }
 
 @Composable
-private fun QuickActionsSection(
-    onNavigateToEstaciones: () -> Unit,
-    onNavigateToPlanificador: () -> Unit,
-    onNavigateToInfo: () -> Unit
+private fun InfoLinksSection(
+    onNavigateToSeguridad: () -> Unit,
+    onNavigateToTarifas: () -> Unit,
+    onNavigateToInfo: () -> Unit,
+    onNavigateToMapa: () -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -219,46 +216,56 @@ private fun QuickActionsSection(
             modifier = Modifier.padding(20.dp)
         ) {
             Text(
-                text = "Acciones Rápidas",
+                text = "Información",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            
+            // Botones en grid 2x2
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                QuickActionButton(
-                    title = "Ver Estaciones",
-                    icon = Icons.Filled.List,
-                    color = MaterialTheme.colorScheme.primary,
-                    onClick = onNavigateToEstaciones,
-                    modifier = Modifier.weight(1f)
-                )
-                QuickActionButton(
-                    title = "Planificar Ruta",
-                    icon = Icons.Filled.ArrowForward,
-                    color = MaterialTheme.colorScheme.secondary,
-                    onClick = onNavigateToPlanificador,
-                    modifier = Modifier.weight(1f)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                QuickActionButton(
-                    title = "Información",
-                    icon = Icons.Filled.Info,
-                    color = MaterialTheme.colorScheme.tertiary,
-                    onClick = onNavigateToInfo,
-                    modifier = Modifier.weight(1f)
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    QuickActionButton(
+                        title = "Consejos de Seguridad",
+                        icon = Icons.Filled.Info,
+                        color = MaterialTheme.colorScheme.primary,
+                        onClick = onNavigateToSeguridad,
+                        modifier = Modifier.weight(1f)
+                    )
+                    QuickActionButton(
+                        title = "Tarifas y Pagos",
+                        icon = Icons.Filled.Info,
+                        color = MaterialTheme.colorScheme.secondary,
+                        onClick = onNavigateToTarifas,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    QuickActionButton(
+                        title = "Información del Metro",
+                        icon = Icons.Filled.Info,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        onClick = onNavigateToInfo,
+                        modifier = Modifier.weight(1f)
+                    )
+                    QuickActionButton(
+                        title = "Mapa",
+                        icon = Icons.Filled.LocationOn,
+                        color = MaterialTheme.colorScheme.primary,
+                        onClick = onNavigateToMapa,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
             }
         }
     }
@@ -273,24 +280,35 @@ private fun QuickActionButton(
     modifier: Modifier = Modifier
 ) {
     var isPressed by remember { mutableStateOf(false) }
-
+    
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.95f else 1f,
         animationSpec = tween(100),
         label = "scale"
     )
 
+    val isDarkTheme = isSystemInDarkTheme()
+    
     Card(
         modifier = modifier
             .scale(scale)
-            .clickable {
+            .clickable { 
                 isPressed = true
                 onClick()
             },
         colors = CardDefaults.cardColors(
-            containerColor = color.copy(alpha = 0.1f)
+            containerColor = if (isDarkTheme) {
+                // En tema oscuro: fondo más visible con el color principal
+                color.copy(alpha = 0.4f)
+            } else {
+                // En tema claro: mantener el estilo original
+                color.copy(alpha = 0.1f)
+            }
         ),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(16.dp),
+        border = if (isDarkTheme) {
+            androidx.compose.foundation.BorderStroke(2.dp, color.copy(alpha = 0.6f))
+        } else null
     ) {
         Column(
             modifier = Modifier
@@ -338,19 +356,32 @@ private fun EstacionSelectorSection(
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = "Usa el planificador para calcular tu ruta",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+            
+            // Selector de estación origen
+            EstacionSelector(
+                estacion = estacionOrigen,
+                label = "Estación Origen",
+                icon = Icons.Filled.LocationOn,
+                onClick = { /* Seleccionar origen */ }
             )
-
+            
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            // Selector de estación destino
+            EstacionSelector(
+                estacion = estacionDestino,
+                label = "Estación Destino",
+                icon = Icons.Filled.LocationOn,
+                onClick = { /* Seleccionar destino */ }
+            )
+            
             Spacer(modifier = Modifier.height(16.dp))
-
+            
             // Botón de calcular ruta
             Button(
                 onClick = onNavigateToPlanificador,
                 modifier = Modifier.fillMaxWidth(),
+                enabled = estacionOrigen != null && estacionDestino != null,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary
                 ),
@@ -363,10 +394,65 @@ private fun EstacionSelectorSection(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Ir al Planificador",
+                    text = "Calcular Ruta",
                     fontWeight = FontWeight.Bold
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun EstacionSelector(
+    estacion: Estacion?,
+    label: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = estacion?.nombre ?: "Seleccionar estación",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium,
+                    color = if (estacion != null) 
+                        MaterialTheme.colorScheme.onSurface 
+                    else 
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Icon(
+                Icons.Filled.ArrowForward,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(20.dp)
+            )
         }
     }
 }
@@ -389,7 +475,7 @@ private fun ServiceInfoSection() {
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(16.dp))
-
+            
             ServiceInfoItem(
                 icon = Icons.Filled.Info,
                 title = "Horario",
@@ -443,11 +529,16 @@ private fun ServiceInfoItem(
     }
 }
 
+
 @Composable
-private fun QuickAccessSection(
-    onNavigateToEstaciones: () -> Unit,
+private fun FavoritesSection(
     onNavigateToPlanificador: () -> Unit
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val favoritosManager = remember { FavoritosManagerSingleton.getInstance(context) }
+    val favoritos by favoritosManager.favoritosRutas.collectAsState()
+    var mostrarDialogoEliminar by remember { mutableStateOf<RutaFavorita?>(null) }
+    
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -458,130 +549,16 @@ private fun QuickAccessSection(
             modifier = Modifier.padding(20.dp)
         ) {
             Text(
-                text = "Acceso Rápido",
+                text = "Rutas Favoritas",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Estaciones más populares
-            Text(
-                text = "Estaciones Populares",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-
-            val estacionesPopulares = listOf("Villa El Salvador", "La Cultura", "Gamarra", "Bayóvar")
-            estacionesPopulares.forEach { estacion ->
-                QuickAccessItem(
-                    title = estacion,
-                    icon = Icons.Filled.LocationOn,
-                    onClick = onNavigateToEstaciones
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = onNavigateToPlanificador,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Icon(Icons.Filled.ArrowForward, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Planificar Ruta")
-            }
-        }
-    }
-}
-
-@Composable
-private fun QuickAccessItem(
-    title: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        onClick = onClick,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(20.dp)
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Medium
-            )
-        }
-    }
-}
-
-@Composable
-private fun FavoritesSectionWithData(
-    favoritos: List<RutaFavorita>,
-    onNavigateToFavoritos: () -> Unit,
-    onNavigateToPlanificador: () -> Unit,
-    onDeleteFavorito: (String) -> Unit
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
-    ) {
-        Column(
-            modifier = Modifier.padding(20.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Rutas Favoritas",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-
-                if (favoritos.isNotEmpty()) {
-                    TextButton(onClick = onNavigateToFavoritos) {
-                        Text("Ver todos")
-                        Icon(
-                            Icons.Filled.ArrowForward,
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp)
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
+            
             if (favoritos.isEmpty()) {
-                // Estado vacío
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 24.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Icon(
@@ -590,46 +567,135 @@ private fun FavoritesSectionWithData(
                         modifier = Modifier.size(48.dp),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = "No tienes rutas favoritas",
                         style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Agrega rutas desde el planificador usando el botón de corazón",
+                        text = "Agrega rutas desde el planificador",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = onNavigateToPlanificador) {
-                        Icon(Icons.Filled.Add, contentDescription = null)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Ir al Planificador")
-                    }
                 }
             } else {
-                // Mostrar los primeros 3 favoritos
-                favoritos.take(3).forEach { favorito ->
-                    FavoritoItemCompact(
-                        favorito = favorito,
-                        onPlanificar = { onNavigateToPlanificador() },
-                        onEliminar = { onDeleteFavorito(favorito.id) }
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    favoritos.forEach { favorito ->
+                        FavoriteRouteCard(
+                            favorito = favorito,
+                            onPlanificar = {
+                                onNavigateToPlanificador()
+                            },
+                            onEliminar = {
+                                mostrarDialogoEliminar = favorito
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
+    
+    // Diálogo de confirmación para eliminar
+    if (mostrarDialogoEliminar != null) {
+        AlertDialog(
+            onDismissRequest = { mostrarDialogoEliminar = null },
+            title = { Text("Eliminar Favorito") },
+            text = { 
+                Text("¿Estás seguro de que quieres eliminar esta ruta de tus favoritos?") 
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        favoritosManager.eliminarFavorito(mostrarDialogoEliminar!!.id)
+                        mostrarDialogoEliminar = null
+                    }
+                ) {
+                    Text("Eliminar")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { mostrarDialogoEliminar = null }
+                ) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun FavoriteRouteCard(
+    favorito: RutaFavorita,
+    onPlanificar: () -> Unit,
+    onEliminar: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Favorite,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(24.dp)
+            )
+            
+            Spacer(modifier = Modifier.width(12.dp))
+            
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = "${favorito.origen} → ${favorito.destino}",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = formatearFecha(favorito.timestamp),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                IconButton(
+                    onClick = onPlanificar,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowForward,
+                        contentDescription = "Planificar ruta",
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
-
-                if (favoritos.size > 3) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "+ ${favoritos.size - 3} más",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
+                
+                IconButton(
+                    onClick = onEliminar,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = "Eliminar favorito",
+                        tint = MaterialTheme.colorScheme.error
                     )
                 }
             }
@@ -637,64 +703,10 @@ private fun FavoritesSectionWithData(
     }
 }
 
-@Composable
-private fun FavoritoItemCompact(
-    favorito: RutaFavorita,
-    onPlanificar: () -> Unit,
-    onEliminar: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Favorite,
-                contentDescription = null,
-                tint = Color(0xFFE30613),
-                modifier = Modifier.size(20.dp)
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "${favorito.origen} → ${favorito.destino}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-            IconButton(
-                onClick = onPlanificar,
-                modifier = Modifier.size(32.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowForward,
-                    contentDescription = "Planificar",
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(18.dp)
-                )
-            }
-            IconButton(
-                onClick = onEliminar,
-                modifier = Modifier.size(32.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Delete,
-                    contentDescription = "Eliminar",
-                    tint = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.size(18.dp)
-                )
-            }
-        }
-    }
+private fun formatearFecha(timestamp: Long): String {
+    val fecha = java.util.Date(timestamp)
+    val formato = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+    return formato.format(fecha)
 }
 
 @Composable
